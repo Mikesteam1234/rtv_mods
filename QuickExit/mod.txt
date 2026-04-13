@@ -1,0 +1,7 @@
+[mod]
+name="Quick Exit"
+id="quick-exit"
+version="1.0.0"
+
+[autoload]
+QuickExit="res://mods/QuickExit/Main.gd"

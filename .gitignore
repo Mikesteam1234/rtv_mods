@@ -14,3 +14,12 @@ export_credentials.cfg
 .mono/
 data_*/
 mono_crash.*.json
+
+# Local config
+Scripts/.env
+
+#Decompiled Source
+Decomp/
+
+#.claude resources
+.claude/
