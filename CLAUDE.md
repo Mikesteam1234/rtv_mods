@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Working directives
 
 - Always reference this repo's local `.claude/` directory first before consulting `~/.claude/`. Project-local config and context take precedence over the user-global one.
-- Always check `knowledge_base/` for relevant files before making a plan or implementing anything. Treat it as the primary source of task-specific context.
+- Before planning or implementing anything, read [.claude/knowledge_base/index.md](.claude/knowledge_base/index.md) and load any entries whose summary is relevant to the task into context. Treat `knowledge_base/` as the primary source of task-specific context — the index exists so you can find the right file without scanning the tree.
 
 ## Repository purpose
 

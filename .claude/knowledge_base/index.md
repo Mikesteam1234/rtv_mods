@@ -42,6 +42,28 @@ Source: https://github.com/ametrocavich/vostok-modding-wiki/wiki
 | [walkthroughs/item-spawner.md](walkthroughs/item-spawner.md) | Scene-based autoload, zero script overrides, defensive coding, dual data paths |
 | [walkthroughs/todon-clock.md](walkthroughs/todon-clock.md) | Override chaining, priority ordering, dual tooltip system (inventory + world) |
 
+## Game Internals
+
+Decompiled-source reference — *what to mod against* (complement to the how-to-mod docs above). See [game-internals/index.md](game-internals/index.md) for the full map.
+
+| File | Summary |
+|------|---------|
+| [game-internals/index.md](game-internals/index.md) | Top-level facts (engine, autoloads, `GameData`, groups, physics tick), scene-tree orientation, doc map |
+| [game-internals/autoloads-and-boot.md](game-internals/autoloads-and-boot.md) | `Loader`, `Database`, `Simulation`, `GameData`, boot flow, scene-change pipeline |
+| [game-internals/player-system.md](game-internals/player-system.md) | `Controller`, `Character`, `Camera`, `Inputs`, head rig, movement, vitals |
+| [game-internals/weapons-and-combat.md](game-internals/weapons-and-combat.md) | `WeaponRig`, `Handling`, grenade/knife/fishing rigs, `Hit`, `Damage`, `Hitbox`, `RigManager` |
+| [game-internals/ai-system.md](game-internals/ai-system.md) | `AI`, `AIPoint`, `AISpawner`, state machine, `BTR`, `Police`, `Helicopter`, ragdoll |
+| [game-internals/items-and-loot.md](game-internals/items-and-loot.md) | `Item`, `ItemData` + subclasses, `Slot`, `Grid`, `LootContainer`, `LootTable` |
+| [game-internals/world-and-levels.md](game-internals/world-and-levels.md) | `World`, time of day, weather, `Spawner`, `Transition`, `Border`, `Optimizer`, shelters |
+| [game-internals/ui-system.md](game-internals/ui-system.md) | `HUD`, `Interface`, `Menu`, `Settings`, `Loading`, `NVG`, `UIManager` |
+| [game-internals/audio-system.md](game-internals/audio-system.md) | `Audio`, `AudioLibrary`, `AudioEvent`, 2D/3D instances, buses, music, casette/radio |
+| [game-internals/save-system.md](game-internals/save-system.md) | `*Save` resources, `Preferences`, `Validator`, persistence paths in `user://` |
+| [game-internals/events-and-tasks.md](game-internals/events-and-tasks.md) | `EventSystem`, `EventData`, `Event`, trader `TaskData`, `Detector`, `Condition` |
+| [game-internals/crafting-and-traders.md](game-internals/crafting-and-traders.md) | `Recipe`/`RecipeData`/`Recipes`, `Trader`/`TraderData`, crafting UI flow |
+| [game-internals/shelter-and-interactables.md](game-internals/shelter-and-interactables.md) | `Furniture`, `Placer`, `DecorMode`, beds, doors, fire/fuel, cables, switches, cat/fish |
+| [game-internals/scenes-reference.md](game-internals/scenes-reference.md) | Key scene graphs: `Menu`, `Core`, level wrappers, autoload scenes |
+| [game-internals/resources-reference.md](game-internals/resources-reference.md) | Layout of `Items/`, `Loot/`, `AI/`, `Events/`, `Traders/`, `Crafting/`, `Resources/` |
+
 ---
 
 ## Key Facts at a Glance
