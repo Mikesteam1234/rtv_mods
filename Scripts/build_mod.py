@@ -5,7 +5,8 @@ Usage: build_mod.py <ModFolder> [--version X.Y.Z] [--out DIR]
 
 If --version is provided, rewrites the `version=` line in the archived
 mod.txt (the working tree is not modified). Output filename is always
-`<mod-id>-<version>.vmz`.
+`<ModFolder>.vmz` — the game's mod loader keys off the folder/archive
+name, so versioning lives in the tag and Release title, not the filename.
 """
 
 from __future__ import annotations
@@ -21,9 +22,8 @@ from modlib import PROJECT_ROOT, load_manifest, rewrite_version_in_mod_txt
 
 def build(mod_folder: Path, out_dir: Path, version_override: str | None) -> Path:
     manifest = load_manifest(mod_folder)
-    version = version_override or manifest.version
     out_dir.mkdir(parents=True, exist_ok=True)
-    out_path = out_dir / f"{manifest.id}-{version}.vmz"
+    out_path = out_dir / f"{mod_folder.name}.vmz"
 
     rewritten_mod_txt: str | None = None
     if version_override and version_override != manifest.version:
