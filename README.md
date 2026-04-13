@@ -13,6 +13,15 @@ Files:
 - `QuickExit/mods/QuickExit/Main.gd` — autoload entry point that installs the override
 - `QuickExit/mods/QuickExit/MenuOverride.gd` — replacement `_on_quit_pressed` that calls `get_tree().quit()` directly
 
+### VariableCrouch
+
+Replaces the binary crouch toggle with seven variable crouch levels. Press `C` for the default crouch/stand toggle; hold `C` and scroll the mouse wheel to smoothly adjust stance height between full crouch (pelvis `0.5`) and full stand (`1.0`). Scrolling across the boundary swaps the collision shape and applies the same stance-change impulse the base game uses, and `above.is_colliding()` still gates standing up under geometry. While `C` is held, the `weapon_high`/`weapon_low` input actions are temporarily unbound from the InputMap so the wheel doesn't also raise/lower the weapon — they're restored on release.
+
+Files:
+- `VariableCrouch/mod.txt` — mod manifest
+- `VariableCrouch/mods/VariableCrouch/Main.gd` — autoload entry point that installs the override
+- `VariableCrouch/mods/VariableCrouch/ControllerOverride.gd` — extends `res://Scripts/Controller.gd`; adds the level state, scroll-wheel handler, InputMap stash/restore, and re-targets the pelvis lerp to the active level
+
 ## Scripts
 
 Python 3 helper scripts in `Scripts/`. Both read configuration from `Scripts/.env` (gitignored); copy `.env.example` and fill in paths before use.
@@ -44,6 +53,7 @@ Env vars:
 ## Layout
 
 - `QuickExit/` — the Quick Exit mod, laid out ready to be zipped by `deploy_mod.py`
+- `VariableCrouch/` — the Variable Crouch mod, same layout
 - `Scripts/` — deployment and decompilation helpers
 - `Decomp/` — gitignored output of `decomp.py`; the recovered game project used as a reference
 
