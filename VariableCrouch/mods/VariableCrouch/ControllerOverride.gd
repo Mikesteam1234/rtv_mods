@@ -31,12 +31,10 @@ func _input(event):
 
 	if shouldStand and gameData.isCrouching:
 		gameData.isCrouching = false
-		standImpulse = 0.1
 		standCollider.disabled = false
 		crouchCollider.disabled = true
 	elif not shouldStand and not gameData.isCrouching:
 		gameData.isCrouching = true
-		crouchImpulse = 0.1
 		standCollider.disabled = true
 		crouchCollider.disabled = false
 
@@ -53,7 +51,9 @@ func Crouch(delta):
 		stashedEvents.clear()
 	crouchHeld = held
 
+	var cachedPelvisY: float = pelvis.position.y
 	super.Crouch(delta)
+	pelvis.position.y = cachedPelvisY
 	if gameData.isCrouching and crouchLevel == crouchTargets.size():
 		crouchLevel = 1
 	elif not gameData.isCrouching and crouchLevel != crouchTargets.size():
