@@ -20,3 +20,6 @@ Scripts/.env
 
 #Decompiled Source
 Decomp/
+
+#vscode
+.vscode
