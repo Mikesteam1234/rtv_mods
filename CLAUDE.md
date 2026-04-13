@@ -42,6 +42,14 @@ Because the game's scripts are baked into the pck, mods replace them by:
 
 When writing a new override, `extends "res://..."` must point at the real decompiled path, and the override must keep signatures/fields referenced elsewhere intact. Use `Decomp/` (populated by `decomp.py`) to look up original scripts.
 
+### Override gotchas
+
+- **Call `super.<method>(...)` in every override.** Overriding `_input`, `_ready`, `_physics_process`, etc. replaces the base entirely — mouse look, scene init, input chains all break unless you call super. The ModLoader warns about missing super in lifecycle methods and also breaks other mods' override chains.
+- **`Node` has no `_ready` to super-call.** If the autoload's `Main.gd` `extends Node`, don't write `super._ready()` — it's a parse error. Override chains only apply when extending another script that actually defines the method.
+- **`reload_current_scene()` fails during boot.** Autoloads run before the main scene is set; guard with `if get_tree().current_scene != null`. `take_over_path` persists for the process lifetime regardless, so the reload is only useful when the override's target is in the currently-loaded scene.
+- **`take_over_path` doesn't reach scripts referenced by UID in `.tscn` files.** Godot 4 `.tscn` ext_resources for scripts use `uid://…`, which resolves independently of the resource cache that `take_over_path` patches. Script overrides for scripts attached to weapon rigs, item rigs, etc. silently do nothing — the original script is still instantiated on those nodes. See `knowledge_base/techniques/advanced-techniques.md` ("Scene Inheritance for UID Stripping") for the documented workaround: ship an inherited `.tscn` that re-specifies the script by path. If you only need to suppress an input-driven behavior (not change the node's logic), manipulating `InputMap` at runtime is often simpler — see next bullet.
+- **Polled input (`Input.is_action_just_pressed`) bypasses `_input()`.** `set_input_as_handled()` on the viewport only blocks `_unhandled_input` — other nodes' `_input` and direct `Input.*` polling (used by `Handling.gd` for `weapon_high`/`weapon_low`, for example) still fire. To suppress a polled action under a condition, stash and `InputMap.action_erase_events(name)` while the condition holds, then `action_add_event` back to restore. This works even against scripts you can't override.
+
 ### Decomp/
 
 Gitignored. Recovered Godot project from the shipped pck — treat as read-only reference when authoring overrides. Do not edit or commit.

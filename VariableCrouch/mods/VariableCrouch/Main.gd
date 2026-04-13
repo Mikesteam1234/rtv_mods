@@ -10,8 +10,5 @@ func overrideScript(overrideScriptPath: String):
 	var script: Script = load(overrideScriptPath)
 	script.reload()
 	var parentScript = script.get_base_script()
-	var parentPath: String = parentScript.resource_path
-	script.take_over_path(parentPath)
-	var resolved := load(parentPath)
-	print("[VariableCrouch] override ", overrideScriptPath, " -> ", parentPath, " resolves to ", resolved.resource_path, " same=", resolved == script)
+	script.take_over_path(parentScript.resource_path)
 	return script
