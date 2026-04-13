@@ -17,9 +17,13 @@ mono_crash.*.json
 
 # Local config
 Scripts/.env
+Scripts/__pycache__/
 
 #Decompiled Source
 Decomp/
+
+#.claude
+.claude/knowledge_base/json/
 
 #vscode
 .vscode

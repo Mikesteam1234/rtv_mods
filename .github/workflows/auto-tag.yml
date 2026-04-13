@@ -1,0 +1,42 @@
+name: Auto-tag Release PR
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  tag:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.title, 'Release: ')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Parse title and push tag
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          # Expected format: "Release: <mod_id> v<version>"
+          rest="${TITLE#Release: }"
+          mod_id="${rest%% v*}"
+          version="${rest##* v}"
+          tag="${mod_id}-v${version}"
+          if [ -z "$mod_id" ] || [ -z "$version" ] || [ "$mod_id" = "$rest" ]; then
+            echo "Could not parse mod_id/version from title: $TITLE" >&2
+            exit 1
+          fi
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "Tag $tag already exists; nothing to do."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$tag" "$SHA" -m "Release $mod_id v$version (PR #${{ github.event.pull_request.number }})"
+          git push origin "$tag"
+          echo "Pushed tag $tag"

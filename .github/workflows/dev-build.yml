@@ -1,0 +1,52 @@
+name: Dev Build
+
+on:
+  push:
+    branches: [dev]
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      mods: ${{ steps.detect.outputs.mods }}
+      has_changes: ${{ steps.detect.outputs.has_changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: detect
+        run: |
+          # Compare the push range; fall back to HEAD~1 if `before` is zeroed (first push).
+          before="${{ github.event.before }}"
+          if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then
+            before="HEAD~1"
+          fi
+          mods=$(python3 Scripts/detect_changed_mods.py --base "$before" --head HEAD)
+          echo "mods=$mods" >> "$GITHUB_OUTPUT"
+          if [ "$mods" = "[]" ]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Changed mods: $mods"
+
+  build:
+    needs: detect
+    if: needs.detect.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mod: ${{ fromJSON(needs.detect.outputs.mods) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate
+        run: python3 Scripts/validate_mod.py "${{ matrix.mod }}"
+      - name: Build
+        run: python3 Scripts/build_mod.py "${{ matrix.mod }}" --out ./dist
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.mod }}-dev-${{ github.sha }}
+          path: ./dist/*.vmz
+          retention-days: 30

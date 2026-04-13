@@ -15,12 +15,22 @@ Mods and tooling for [Road to Vostok](https://roadtovostok.com/), a Godot 4 game
 
 All scripts are Python 3 (never bash). Both read config from `Scripts/.env`.
 
-- Deploy a mod: `Scripts/deploy_mod.py <ModFolder>` — zips `<ModFolder>/` as `<ModFolder>.vmz` (community convention for RTV mods — a zip with a renamed extension) and rsyncs it to `$RTV_PATH/mods/`.
+- Deploy a mod locally: `Scripts/deploy_mod.py <ModFolder>` — builds the `.vmz` and rsyncs it to `$RTV_PATH/mods/`.
+- Package only: `Scripts/build_mod.py <ModFolder> [--version X.Y.Z] [--out DIR]` — pure zip, no deploy. Used by CI and by `deploy_mod.py`.
+- Validate: `Scripts/validate_mod.py <ModFolder>` — runs publishing-guide sanity checks.
+- Detect changed mods: `Scripts/detect_changed_mods.py [--base REF] [--head REF]` — emits JSON array for GitHub Actions matrix.
+- ModWorkshop version check: `Scripts/publish_modworkshop.py check <ModFolder> --expected-version X.Y.Z` — read-only (MW API is GET-only today; upload path is a stub).
 - Decompile the game: `Scripts/decomp.py` — extracts `$RTV_PATH/RTV.pck` via `godotpcktool` and recovers a Godot project to `$RECOVER_PATH` (default `/mnt/c/Dev/RTV/Decomp`) using `gdre_tools.x86_64`. Both tools must be on `PATH`.
 
 Env vars (in `Scripts/.env`): `RTV_PATH` (game install dir), `DCMP_PATH` (scratch), `RECOVER_PATH` (recovered project out).
 
-There is no build step, test suite, or linter — mods are plain GDScript loaded at runtime by the game.
+There is no test suite or linter — mods are plain GDScript loaded at runtime by the game.
+
+## CI/CD pipeline
+
+Workflows live in `.github/workflows/`. Branch model: feature → PR to `dev` → merge triggers dev build → manual dispatch opens release PR `dev` → `main` → merge auto-pushes tag `<mod-id>-v<semver>` → release workflow builds the `.vmz`, creates a GitHub Release, and posts a ModWorkshop upload checklist (manual upload — MW write API is not yet public).
+
+Mod detection is path-based via `detect_changed_mods.py`; any folder at repo root containing a `mod.txt` is a packageable mod. Versions are tag-driven — `build_mod.py --version` rewrites `mod.txt` at package time, so `version=` in the working tree does not need to be bumped per release.
 
 ## Architecture
 

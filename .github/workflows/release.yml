@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*-v*.*.*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Parse tag
+        id: parse
+        env:
+          REF: ${{ github.ref_name }}
+        run: |
+          # Tag format: <mod_id>-v<version>  (mod_id may itself contain hyphens)
+          version="${REF##*-v}"
+          mod_id="${REF%-v${version}}"
+          echo "mod_id=$mod_id" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Parsed tag: mod_id=$mod_id version=$version"
+
+      - name: Resolve mod folder
+        id: mod
+        env:
+          MOD_ID: ${{ steps.parse.outputs.mod_id }}
+        run: |
+          MOD_ID="$MOD_ID" python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os, sys
+          sys.path.insert(0, "Scripts")
+          from modlib import find_mod_by_id
+          m = find_mod_by_id(os.environ["MOD_ID"])
+          print(f"folder={m.folder_name}")
+          print(f"name={m.name}")
+          PY
+
+      - name: Validate
+        run: python3 Scripts/validate_mod.py "${{ steps.mod.outputs.folder }}"
+
+      - name: Build
+        id: build
+        run: |
+          python3 Scripts/build_mod.py \
+            "${{ steps.mod.outputs.folder }}" \
+            --version "${{ steps.parse.outputs.version }}" \
+            --out ./dist
+          vmz=$(ls ./dist/*.vmz | head -n1)
+          echo "vmz=$vmz" >> "$GITHUB_OUTPUT"
+
+      - name: ModWorkshop version check
+        run: |
+          python3 Scripts/publish_modworkshop.py check \
+            "${{ steps.mod.outputs.folder }}" \
+            --expected-version "${{ steps.parse.outputs.version }}" \
+            --out ./dist/mw-checklist.md
+          cat ./dist/mw-checklist.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fetch release PR body
+        id: prbody
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          # Find the release PR that introduced this tag (title matches "Release: <mod_id> v<version>")
+          pr_title="Release: ${{ steps.parse.outputs.mod_id }} v${{ steps.parse.outputs.version }}"
+          pr_body=$(gh pr list --state merged --base main --search "\"$pr_title\"" --json body --jq '.[0].body // ""')
+          {
+            echo "body<<RELEASE_BODY_EOF"
+            if [ -n "$pr_body" ]; then
+              echo "$pr_body"
+              echo
+              echo "---"
+              echo
+            fi
+            cat ./dist/mw-checklist.md
+            echo "RELEASE_BODY_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          TITLE: ${{ steps.mod.outputs.name }} v${{ steps.parse.outputs.version }}
+          BODY: ${{ steps.prbody.outputs.body }}
+          VMZ: ${{ steps.build.outputs.vmz }}
+        run: |
+          gh release create "$TAG" "$VMZ" --title "$TITLE" --notes "$BODY"
