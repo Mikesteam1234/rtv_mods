@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "*-v*.*.*"
+  workflow_call:
+    inputs:
+      tag:
+        description: "Tag name (e.g. variable-crouch-v1.0.1) to release."
+        required: true
+        type: string
 
 jobs:
   release:
@@ -11,14 +17,27 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Resolve tag
+        id: tag
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+          PUSH_REF: ${{ github.ref_name }}
+        run: |
+          if [ -n "$INPUT_TAG" ]; then
+            echo "name=$INPUT_TAG" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=$PUSH_REF" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ steps.tag.outputs.name }}
 
       - name: Parse tag
         id: parse
         env:
-          REF: ${{ github.ref_name }}
+          REF: ${{ steps.tag.outputs.name }}
         run: |
           # Tag format: <mod_id>-v<version>  (mod_id may itself contain hyphens)
           version="${REF##*-v}"
@@ -66,9 +85,7 @@ jobs:
         id: prbody
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ github.ref_name }}
         run: |
-          # Find the release PR that introduced this tag (title matches "Release: <mod_id> v<version>")
           pr_title="Release: ${{ steps.parse.outputs.mod_id }} v${{ steps.parse.outputs.version }}"
           pr_body=$(gh pr list --state merged --base main --search "\"$pr_title\"" --json body --jq '.[0].body // ""')
           {
@@ -86,7 +103,7 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ steps.tag.outputs.name }}
           TITLE: ${{ steps.mod.outputs.name }} v${{ steps.parse.outputs.version }}
           BODY: ${{ steps.prbody.outputs.body }}
           VMZ: ${{ steps.build.outputs.vmz }}
