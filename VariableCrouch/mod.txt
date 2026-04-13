@@ -1,0 +1,7 @@
+[mod]
+name="VariableCrouch"
+id="variable-crouch"
+version="1.0.0"
+
+[autoload]
+VariableCrouch="res://mods/VariableCrouch/Main.gd"

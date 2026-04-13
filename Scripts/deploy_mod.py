@@ -47,7 +47,7 @@ def main():
         print(f"Error: Folder '{mod_dir}' does not exist.", file=sys.stderr)
         sys.exit(1)
 
-    zip_path = Path(tempfile.gettempdir()) / f"{mod_name}.zip"
+    zip_path = Path(tempfile.gettempdir()) / f"{mod_name}.vmz"
 
     print(f"Zipping {mod_name}...")
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
