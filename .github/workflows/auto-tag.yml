@@ -7,10 +7,14 @@ on:
 
 jobs:
   tag:
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.title, 'Release: ')
+    if: >-
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.title, 'Release: ')
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.push.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -18,6 +22,7 @@ jobs:
           ref: main
 
       - name: Parse title and push tag
+        id: push
         env:
           TITLE: ${{ github.event.pull_request.title }}
           SHA: ${{ github.event.pull_request.merge_commit_sha }}
@@ -31,8 +36,9 @@ jobs:
             echo "Could not parse mod_id/version from title: $TITLE" >&2
             exit 1
           fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
           if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
-            echo "Tag $tag already exists; nothing to do."
+            echo "Tag $tag already exists; skipping push."
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -40,3 +46,13 @@ jobs:
           git tag -a "$tag" "$SHA" -m "Release $mod_id v$version (PR #${{ github.event.pull_request.number }})"
           git push origin "$tag"
           echo "Pushed tag $tag"
+
+  release:
+    # GITHUB_TOKEN-pushed tags don't trigger the `push: tags` event on release.yml,
+    # so invoke it directly as a reusable workflow.
+    needs: tag
+    uses: ./.github/workflows/release.yml
+    permissions:
+      contents: write
+    with:
+      tag: ${{ needs.tag.outputs.tag }}
