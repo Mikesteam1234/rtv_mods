@@ -64,6 +64,25 @@ Decompiled-source reference — *what to mod against* (complement to the how-to-
 | [game-internals/scenes-reference.md](game-internals/scenes-reference.md) | Key scene graphs: `Menu`, `Core`, level wrappers, autoload scenes |
 | [game-internals/resources-reference.md](game-internals/resources-reference.md) | Layout of `Items/`, `Loot/`, `AI/`, `Events/`, `Traders/`, `Crafting/`, `Resources/` |
 
+## Godot 4.6.1 Reference
+
+Distilled from the [official Godot 4.6 documentation](https://docs.godotengine.org/en/stable/). See [godot/index.md](godot/index.md) for the full section index.
+
+| File | Summary |
+|------|---------|
+| [godot/gdscript-basics.md](godot/gdscript-basics.md) | Variables, types, operators, control flow, functions, classes, inheritance, enums, annotations |
+| [godot/gdscript-typing-and-exports.md](godot/gdscript-typing-and-exports.md) | Static typing, typed arrays/dicts, `@export` annotations, ranges, hints |
+| [godot/gdscript-style-guide.md](godot/gdscript-style-guide.md) | Naming conventions, formatting, file ordering, documentation comments |
+| [godot/scene-tree-and-nodes.md](godot/scene-tree-and-nodes.md) | SceneTree lifecycle, `_ready`/`_process`/`_input` order, instancing, node references |
+| [godot/signals-and-groups.md](godot/signals-and-groups.md) | Signal declaration/connection/emission, groups, `get_nodes_in_group()` |
+| [godot/resources-and-loading.md](godot/resources-and-loading.md) | Resource vs Node, `load()`/`preload()`, `ResourceLoader`, `res://` vs `user://` |
+| [godot/autoloads-and-singletons.md](godot/autoloads-and-singletons.md) | Autoload setup, access patterns, when to use autoloads vs node injection |
+| [godot/input-system.md](godot/input-system.md) | InputEvent hierarchy, InputMap, `_input` vs `_unhandled_input`, `Input` singleton |
+| [godot/notifications-and-lifecycle.md](godot/notifications-and-lifecycle.md) | NOTIFICATION constants, lifecycle order, `delta`, `process_mode`, pausing |
+| [godot/class-reference-node.md](godot/class-reference-node.md) | Node class: key properties, methods, signals, virtual methods |
+| [godot/class-reference-essentials.md](godot/class-reference-essentials.md) | SceneTree, Resource, PackedScene, Tween, Timer — curated API |
+| [godot/best-practices.md](godot/best-practices.md) | Composition vs inheritance, call down / signal up, duck typing, interfaces |
+
 ---
 
 ## Key Facts at a Glance
