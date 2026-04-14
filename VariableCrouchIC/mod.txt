@@ -1,0 +1,7 @@
+[mod]
+name="Variable Crouch Intuitive Control"
+id="variable-crouch-ic"
+version="1.0.0"
+
+[autoload]
+VariableCrouchIC="res://mods/VariableCrouchIC/Main.gd"
