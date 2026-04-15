@@ -64,6 +64,44 @@ Decompiled-source reference — *what to mod against* (complement to the how-to-
 | [game-internals/scenes-reference.md](game-internals/scenes-reference.md) | Key scene graphs: `Menu`, `Core`, level wrappers, autoload scenes |
 | [game-internals/resources-reference.md](game-internals/resources-reference.md) | Layout of `Items/`, `Loot/`, `AI/`, `Events/`, `Traders/`, `Crafting/`, `Resources/` |
 
+## Clean Code
+
+Distilled from Robert C. Martin, *Clean Code: A Handbook of Agile Software Craftsmanship* (2nd ed.). See [clean-code/index.md](clean-code/index.md) for the full section index. Used by the [`code-reviewer`](../agents/code-reviewer.md) agent.
+
+| File | Summary |
+|------|---------|
+| [clean-code/index.md](clean-code/index.md) | Section map; how Clean Code principles translate to GDScript / RTV |
+| [clean-code/first-principles.md](clean-code/first-principles.md) | What "clean" means; Boy Scout Rule; 10:1 read/write ratio; small / well-named / organized / ordered |
+| [clean-code/names.md](clean-code/names.md) | Intention-revealing, pronounceable, searchable names; length-by-scope rules; no disinformation or noise |
+| [clean-code/comments.md](clean-code/comments.md) | Comments as failure; good vs. bad kinds; delete commented-out code; repo prefers no comments |
+| [clean-code/formatting.md](clean-code/formatting.md) | Vertical/horizontal formatting; newspaper metaphor; defers to `godot/gdscript-style-guide.md` |
+| [clean-code/functions.md](clean-code/functions.md) | Small; one thing; one level of abstraction; stepdown; few args; CQS; prefer exceptions |
+| [clean-code/objects-and-classes.md](clean-code/objects-and-classes.md) | Object/data antisymmetry; Law of Demeter; DTOs; SRP at class scope; cohesion |
+| [clean-code/testing.md](clean-code/testing.md) | TDD/TCR/Small Bundles; F.I.R.S.T.; test DSLs; RTV's deploy-and-play equivalent |
+| [clean-code/simple-design-and-solid.md](clean-code/simple-design-and-solid.md) | Kent Beck's four rules; YAGNI; SOLID (SRP/OCP/LSP/ISP/DIP) |
+| [clean-code/architecture-and-components.md](clean-code/architecture-and-components.md) | Two values of software; REP/CCP/CRP; ADP/SDP/SAP; the Clean Architecture rings |
+| [clean-code/concurrency.md](clean-code/concurrency.md) | Why concurrency is hard; defense principles; Godot's main-thread rule |
+| [clean-code/craftsmanship.md](clean-code/craftsmanship.md) | The Programmer's Oath; harm; small cycles; relentless improvement |
+
+## Godot 4.6.1 Reference
+
+Distilled from the [official Godot 4.6 documentation](https://docs.godotengine.org/en/stable/). See [godot/index.md](godot/index.md) for the full section index.
+
+| File | Summary |
+|------|---------|
+| [godot/gdscript-basics.md](godot/gdscript-basics.md) | Variables, types, operators, control flow, functions, classes, inheritance, enums, annotations |
+| [godot/gdscript-typing-and-exports.md](godot/gdscript-typing-and-exports.md) | Static typing, typed arrays/dicts, `@export` annotations, ranges, hints |
+| [godot/gdscript-style-guide.md](godot/gdscript-style-guide.md) | Naming conventions, formatting, file ordering, documentation comments |
+| [godot/scene-tree-and-nodes.md](godot/scene-tree-and-nodes.md) | SceneTree lifecycle, `_ready`/`_process`/`_input` order, instancing, node references |
+| [godot/signals-and-groups.md](godot/signals-and-groups.md) | Signal declaration/connection/emission, groups, `get_nodes_in_group()` |
+| [godot/resources-and-loading.md](godot/resources-and-loading.md) | Resource vs Node, `load()`/`preload()`, `ResourceLoader`, `res://` vs `user://` |
+| [godot/autoloads-and-singletons.md](godot/autoloads-and-singletons.md) | Autoload setup, access patterns, when to use autoloads vs node injection |
+| [godot/input-system.md](godot/input-system.md) | InputEvent hierarchy, InputMap, `_input` vs `_unhandled_input`, `Input` singleton |
+| [godot/notifications-and-lifecycle.md](godot/notifications-and-lifecycle.md) | NOTIFICATION constants, lifecycle order, `delta`, `process_mode`, pausing |
+| [godot/class-reference-node.md](godot/class-reference-node.md) | Node class: key properties, methods, signals, virtual methods |
+| [godot/class-reference-essentials.md](godot/class-reference-essentials.md) | SceneTree, Resource, PackedScene, Tween, Timer — curated API |
+| [godot/best-practices.md](godot/best-practices.md) | Composition vs inheritance, call down / signal up, duck typing, interfaces |
+
 ---
 
 ## Key Facts at a Glance
