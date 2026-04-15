@@ -5,3 +5,6 @@ version="1.0.0"
 
 [autoload]
 VariableCrouch="res://mods/VariableCrouch/Main.gd"
+
+[updates]
+modworkshop=56090
